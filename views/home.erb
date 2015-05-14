@@ -3,4 +3,16 @@
   <input type="submit" />
 </form>
 
-<%= @result %>
+<% if @result %>
+
+<h1><%= @result['name'] %></h1>
+  <% @result['asin'][:wins].each do |win| %>
+    <p>Win - <a href="<%= win %>"><%= win %></a></p>
+  <% end %>
+  <% @result['asin'][:fails].each do |fail| %>
+    <p>Fail - <a href="<%= fail %>"><%= fail %></a></p>
+  <% end %>
+
+
+
+<% end %>

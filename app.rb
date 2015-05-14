@@ -20,10 +20,7 @@ def check a, zones
     end
   end
 
-  puts "FAILS"
-  p fails
-  puts "WINS"
-  p wins
+  return {fails: fails, wins: wins}
 
 end
 
@@ -41,32 +38,32 @@ post '/' do
 
   name = noko.css("td#fbt_x_img > img")[0]['alt']
 
-  # asin = page.match(/;asin=([A-Z0-9]{10})/)
+  asin = page.match(/;asin=([A-Z0-9]{10})/)
 
-  # asin = page.match(/"ASIN"\s?:\s?"([A-Z0-9]{10})/)
-  # alt_asin = page.match(/data-tmm-see-more-editions-click.+([A-Z0-9]{10})\//)
+  asin = page.match(/"ASIN"\s?:\s?"([A-Z0-9]{10})/)
+  alt_asin = page.match(/data-tmm-see-more-editions-click.+([A-Z0-9]{10})\//)
 
-  # zones = [
-  #   ["com.au", "Australia"],
-  #   ["com.br", "Brazil", "squirrul0b-20"],
-  #   ["ca", "Canada", "squirrul05-20"],
-  #   ["cn", "China"],
-  #   ["fr", "France", "squirrul0d8-21"],
-  #   ["de", "Germany", "squirrul-21"],
-  #   ["in", "India"], # Payee Country: Invalid data. Only Indian Residents are eligible
-  #   ["it", "Italy", "squirrul0e-21"],
-  #   ["co.jp", "Japan"],
-  #   ["com.mx", "Mexico"],
-  #   ["nl", "Netherlands"],
-  #   ["es", "Spain", "squirrul01-21"],
-  #   ["com", "United States", "squirrul-20"],
-  #   ["co.uk", "United Kingdom", "squirrul08-21"]
-  # ]
+  zones = [
+    ["com.au", "Australia"],
+    ["com.br", "Brazil", "squirrul0b-20"],
+    ["ca", "Canada", "squirrul05-20"],
+    ["cn", "China"],
+    ["fr", "France", "squirrul0d8-21"],
+    ["de", "Germany", "squirrul-21"],
+    ["in", "India"], # Payee Country: Invalid data. Only Indian Residents are eligible
+    ["it", "Italy", "squirrul0e-21"],
+    ["co.jp", "Japan"],
+    ["com.mx", "Mexico"],
+    ["nl", "Netherlands"],
+    ["es", "Spain", "squirrul01-21"],
+    ["com", "United States", "squirrul-20"],
+    ["co.uk", "United Kingdom", "squirrul08-21"]
+  ]
 
-  # check(asin, zones) if asin
-  # check(alt_asin, zones) if alt_asin
-
-  @result = name
+  @result = {}
+  @result['name'] = name
+  @result['asin'] = check(asin, zones) if asin
+  @result['alt_asin'] = check(alt_asin, zones) if alt_asin
 
   erb :home
 
