@@ -7,6 +7,7 @@ require 'open-uri'
 
 def check a, zones
 
+  # fails = websites that don't exist
   fails = []
   wins = []
 
@@ -30,20 +31,27 @@ end
 
 post '/' do
 
+  # user agent is required when scraping amazon urls
+  user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13'
   url = params[:url]#"http://www.amazon.com/Halo-Master-Chief-Collection-Xbox-One/dp/B00KSQHX1K/ref=sr_1_1?ie=UTF8&qid=1431599972&sr=8-1&keywords=halo"
-  get = open(url, "User-Agent" => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13')
+  get = open(url, "User-Agent" => user_agent)
   noko = Nokogiri::HTML(get)
 
-  page = open(url, "User-Agent" => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13').read
+  page = open(url, "User-Agent" => user_agent).read
 
   name = noko.css("td#fbt_x_img > img")[0]['alt']
 
-  asin = page.match(/;asin=([A-Z0-9]{10})/)
+  # Find the ASIN
 
+  # asin = page.match(/;asin=([A-Z0-9]{10})/)
   asin = page.match(/"ASIN"\s?:\s?"([A-Z0-9]{10})/)
+
+
+  # Find Kindle / Alternative ASINs
   alt_asin = page.match(/data-tmm-see-more-editions-click.+([A-Z0-9]{10})\//)
 
   zones = [
+    # [tld, country name, associate ID]
     ["com.au", "Australia"],
     ["com.br", "Brazil", "squirrul0b-20"],
     ["ca", "Canada", "squirrul05-20"],
